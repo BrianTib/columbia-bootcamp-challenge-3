@@ -1,19 +1,48 @@
 // Get a reference to the #add-employees-btn element
 const addEmployeesBtn = document.querySelector('#add-employees-btn');
+const employeeTable = document.querySelector('#employee-table');
 
 // Collect employee data
 const collectEmployees = function() {
-  // TODO: Get user input to create and return an array of employee objects
+  const validateSalaryOrDefault = (input) => {
+    input = parseFloat(input);
+    // Default to 0 for invalid input
+    if (isNaN(input) || input <= 0) { return 0; }
+    return input;
+  }
+
+  // Initialize an empty array to store employee objects
+  const employees = [];
+
+  let addingEmployees = true;
+  while (addingEmployees) {
+    const firstName = prompt("Enter the employee's first name:").trim();
+    const lastName = prompt("Enter the employee's last name:").trim();
+    const salary = validateSalaryOrDefault(prompt("Enter the employee's salary:"));
+
+    employees.push({ firstName, lastName, salary });
+    addingEmployees = confirm('Do you want to add another employee?');
+  }
+
+  return employees;
 }
 
 // Display the average salary
 const displayAverageSalary = function(employeesArray) {
-  // TODO: Calculate and display the average salary
+  const totalSalary = employeesArray.reduce((acc, employee) => acc + employee.salary, 0);
+  const averageSalary = totalSalary / employeesArray.length;
+
+  console.log(`The average salary of all employees is: ${averageSalary.toLocaleString("en-US",{
+    style:"currency",
+    currency:"USD"
+  })}`);
 }
 
 // Select a random employee
 const getRandomEmployee = function(employeesArray) {
   // TODO: Select and display a random employee
+  const randomEmployee = employeesArray[Math.floor(Math.random() * employeesArray.length)];
+  console.log('Random Employee:', randomEmployee);
 }
 
 /*
@@ -68,14 +97,7 @@ const trackEmployeeData = function() {
 
   getRandomEmployee(employees);
 
-  employees.sort(function(a,b) {
-    if (a.lastName < b.lastName) {
-      return -1;
-    } else {
-      return 1;
-    }
-  });
-
+  employees.sort((a,b) => a.lastName.localeCompare(b.lastName));
   displayEmployees(employees);
 }
 
